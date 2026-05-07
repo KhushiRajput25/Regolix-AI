@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regolix AI</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<div class="app">
+  <div class="header">
+    <h1>Regolix AI</h1>
+    <p>AI-powered terrain classification &amp; safe landing zone identification</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Module 01 — Image Upload</div>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept="image/*">
+      <div class="upload-icon">🛸</div>
+      <p>Drop planetary surface image here</p>
+      <span>Supports JPG, PNG, WEBP · Mars, Moon, Titan surfaces</span>
+    </div>
+    <div class="preview-container" id="previewContainer">
+      <img id="previewImg" src="" alt="Surface preview">
+      <div class="scan-overlay" id="scanOverlay"></div>
+      <div class="scan-line" id="scanLine"></div>
+    </div>
+    <div class="status-bar" id="uploadStatus">
+      <span class="status-icon">✓</span>
+      <span id="uploadStatusText">Image loaded — ready for analysis</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Module 02 — Surface Analysis</div>
+    <button class="analyze-btn" id="analyzeBtn" disabled onclick="startAnalysis()">
+      <span id="btnText">🔭 Initiate Surface Scan</span>
+    </button>
+    <div class="analysis-log" id="analysisLog"></div>
+  </div>
+
+  <div class="card hidden" id="resultsCard">
+    <div class="card-title">Module 03 — Terrain Classification</div>
+    <div class="terrain-list" id="terrainList"></div>
+  </div>
+
+  <div class="card hidden" id="riskCard">
+    <div class="card-title">Module 04 — Landing Risk Assessment</div>
+    <div class="overall-safe">
+      <svg class="progress-ring" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(160,100,255,0.15)" stroke-width="7"/>
+        <circle id="ringProgress" cx="40" cy="40" r="32" fill="none" stroke="#a064ff"
+          stroke-width="7" stroke-linecap="round"
+          stroke-dasharray="201" stroke-dashoffset="201"
+          transform="rotate(-90 40 40)"
+          style="transition: stroke-dashoffset 1.5s ease"/>
+        <text id="ringText" x="40" y="40" text-anchor="middle" dominant-baseline="central"
+          font-family="Orbitron,monospace" font-size="11" font-weight="700" fill="#c8aaff">--</text>
+      </svg>
+      <div class="overall-info">
+        <h3>OVERALL SAFETY SCORE</h3>
+        <div class="overall-verdict" id="overallVerdict">Scanning...</div>
+        <div class="overall-desc" id="overallDesc"></div>
+      </div>
+    </div>
+    <div class="results-grid" id="metricsGrid" style="margin-top:1rem"></div>
+  </div>
+
+  <div class="card hidden" id="zonesCard">
+    <div class="card-title">Module 05 — Recommended Landing Zones</div>
+    <div class="landing-zones" id="landingZones"></div>
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

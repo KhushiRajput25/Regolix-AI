@@ -1,0 +1,228 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #080010;
+  color: #e8e0ff;
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#stars-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-top: 1.5rem;
+}
+
+.header h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  color: #c8aaff;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  font-size: 0.95rem;
+  color: #9988bb;
+  letter-spacing: 0.06em;
+}
+
+.card {
+  background: rgba(20,8,40,0.7);
+  border: 1px solid rgba(160,100,255,0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  backdrop-filter: blur(10px);
+}
+
+.card-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: #9966dd;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px; height: 14px;
+  background: #a064ff;
+  border-radius: 2px;
+}
+
+.upload-zone {
+  border: 2px dashed rgba(160,100,255,0.3);
+  border-radius: 12px;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: rgba(160,100,255,0.7);
+  background: rgba(160,100,255,0.06);
+}
+
+.upload-zone input[type=file] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+
+.upload-icon { font-size: 2.5rem; margin-bottom: 0.8rem; opacity: 0.6; }
+.upload-zone p { font-size: 0.9rem; color: #9988bb; margin-bottom: 0.3rem; }
+.upload-zone span { font-size: 0.75rem; color: #6655aa; letter-spacing: 0.05em; }
+
+.preview-container {
+  display: none;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+}
+
+.preview-container img {
+  width: 100%; max-height: 300px;
+  object-fit: cover; display: block;
+  border-radius: 10px;
+  filter: contrast(1.1) saturate(0.8);
+}
+
+.scan-overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(160,100,255,0.03) 2px,rgba(160,100,255,0.03) 4px);
+  pointer-events: none; display: none;
+}
+
+.scan-line {
+  position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,transparent,rgba(160,100,255,0.6),transparent);
+  animation: scan 2s linear infinite; display: none;
+}
+
+@keyframes scan { 0%{top:0} 100%{top:100%} }
+
+.status-bar {
+  display: none; align-items: center; gap: 8px;
+  padding: 0.7rem 1rem;
+  background: rgba(20,8,40,0.5);
+  border-radius: 8px; margin-top: 0.8rem;
+  font-size: 0.8rem; color: #9988bb;
+  border: 1px solid rgba(160,100,255,0.1);
+}
+
+.analyze-btn {
+  width: 100%; padding: 0.9rem 1.5rem;
+  background: linear-gradient(135deg,rgba(120,60,220,0.8),rgba(80,30,160,0.8));
+  border: 1px solid rgba(160,100,255,0.5);
+  border-radius: 10px; color: #e8e0ff;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  display: flex; align-items: center;
+  justify-content: center; gap: 10px;
+}
+
+.analyze-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg,rgba(150,80,255,0.9),rgba(100,50,200,0.9));
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(120,60,220,0.4);
+}
+
+.analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.analysis-log {
+  display: none; font-family: monospace;
+  font-size: 0.78rem; color: #7766aa;
+  line-height: 1.8; max-height: 120px;
+  overflow-y: auto; margin-top: 1rem;
+}
+
+.analysis-log .log-line { display: block; }
+.analysis-log .log-line.highlight { color: #c8aaff; }
+
+.terrain-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.terrain-item { display: flex; align-items: center; gap: 10px; }
+.terrain-label { font-size: 0.8rem; color: #c8b8ee; width: 120px; flex-shrink: 0; }
+.terrain-bar-bg { flex: 1; height: 6px; background: rgba(160,100,255,0.1); border-radius: 3px; overflow: hidden; }
+.terrain-bar { height: 100%; border-radius: 3px; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+.terrain-pct { font-size: 0.75rem; color: #9988bb; width: 35px; text-align: right; font-family: 'Orbitron', monospace; }
+
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.result-metric {
+  background: rgba(30,10,60,0.8);
+  border: 1px solid rgba(160,100,255,0.15);
+  border-radius: 12px; padding: 1rem 1.2rem;
+}
+
+.metric-label {
+  font-size: 0.65rem; color: #7755aa;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 0.5rem; font-family: 'Orbitron', monospace;
+}
+
+.metric-value { font-size: 1.5rem; font-weight: 700; font-family: 'Orbitron', monospace; }
+.metric-sub { font-size: 0.75rem; color: #9988bb; margin-top: 0.3rem; }
+
+.safe { color: #5cff9a; }
+.caution { color: #ffcc44; }
+.danger { color: #ff5566; }
+
+.overall-safe { display: flex; align-items: center; gap: 1.2rem; }
+.progress-ring { width: 80px; height: 80px; flex-shrink: 0; }
+
+.overall-info h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem; color: #9966dd;
+  letter-spacing: 0.1em; margin-bottom: 0.3rem;
+}
+
+.overall-verdict { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.05em; }
+.overall-desc { font-size: 0.8rem; color: #9988bb; margin-top: 0.3rem; line-height: 1.5; }
+
+.landing-zones { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; }
+
+.zone-card {
+  background: rgba(30,10,60,0.6);
+  border-radius: 10px; padding: 0.8rem;
+  text-align: center;
+  border: 1px solid rgba(160,100,255,0.1);
+  transition: all 0.3s;
+}
+
+.zone-card:hover { border-color: rgba(160,100,255,0.35); }
+.zone-id { font-family: 'Orbitron', monospace; font-size: 0.65rem; letter-spacing: 0.12em; color: #9966dd; margin-bottom: 0.4rem; }
+.zone-status { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem; }
+.zone-score { font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 700; }
+.zone-desc { font-size: 0.7rem; color: #7755aa; margin-top: 4px; }
+
+.hidden { display: none !important; }
